@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="description" content="#">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <title>Fatchan Muhammad Hakim</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .employee-form {
+            border-style: solid;
+            padding: 10px;
+            margin: auto;
+            width: 50%;
+            font-size: 12px;
+            font-family: cursive;
+            font-weight: bold;
+            font-style: normal;
+            text-transform: uppercase;
+        }
+        
+        .employees-table {
+            border-style: solid;
+            padding: 20px;
+            margin: auto;
+            width: 70%;
+        }
+        
+        body > table{
+            width: 80%;
+        }
+        
+        table{
+            border-collapse: collapse;
+        }
+        table.list{
+            width:100%;
+        }
+        
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even),table.list thead>tr {
+            background-color: #dddddd;
+        }
+        
+        input[type=text], input[type=number] {
+            width: 100%;
+            padding: 8px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 12px;
+            font-family: cursive;
+            font-weight: bold;
+            font-style: normal;
+            
+        }
+        
+        input[type=submit] {
+            width: 30%;
+            background-color: black;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: cursive;
+            font-weight: bold;
+            font-style: normal;
+            text-transform: uppercase;
+        }
+        
+        form div.form-action-buttons{
+            text-align: right;
+        }
+        
+        a{
+            cursor: pointer;
+            text-decoration: underline;
+            color: #0000ee;
+            margin-right: 4px;
+        }
+        
+        label.validation-error{
+            color:   red;
+            margin-left: 5px;
+        }
+        
+        .hide{
+            display:none;
+        }
+
+        .soll2{
+           position: relative;
+           padding-top: 20px;
+        }
+        
+        .th{
+            position: relative;
+            font-size: 12px;
+            font-family: cursive;
+            font-weight: bold;
+            font-style: normal;
+            text-transform: uppercase;
+        }
+
+        .olla11{
+            position: relative;
+            font-size: 20px;
+            font-family: cursive;
+            font-weight: bold;
+            font-style: normal;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+
+<body>
+
+	<h1><center class="olla11">Fatchan Muhammad Hakim</center></h1>
+	<hr>
+			<div class="employee-form">
+                <form onsubmit="event.preventDefault();onFormSubmit();" autocomplete="off">
+                    <div>
+                        <label>ID Pasien</label><label class="validation-error hide" id="fullNameValidationError">This field is required.</label>
+                        <button type="button" name="search" id="search" onclick="cari()">Cari</button>
+                        <input type="text" name="idpasien" id="idpasien" placeholder="Masukan ID Pasien">
+                    </div>
+                    <div>
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="nama" id="nama" placeholder="Masukan Nama Anda">
+                    </div>
+                    <div>
+                        <label>alamat</label>
+                        <input type="text" name="alamat" id="alamat" placeholder="Masukan Alamat Anda">
+                    </div>
+                    <div>
+                        <label>penyakit</label>
+                        <input type="text" name="penyakit" id="penyakit" placeholder="Masukan Penyakit Anda">
+                    </div>
+                    <div>
+                        <label>No Ruang</label>
+                        <input type="text" name="noruang" id="noruang" placeholder="Masukan No Ruang Anda">
+                    </div>
+                    <div>
+                        <label>bpjs</label>
+                        <input type="text" name="bpjs" id="bpjs" placeholder="Masukan BPJS Anda">
+                    </div>
+                    <div>
+                        <label class="soll1">Tanggal Masuk</label>
+                        <input type="date" name="datemasuk" id="datemasuk">
+                    </div>
+                    <div>
+                        <label class="soll2">Tanggal Keluar</label>
+                        <input type="date" name="datekeluar" id="datekeluar">
+                    </div>
+                    <div  class="form-action-buttons">
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+		</div>
+		<br/>
+		<div class = "employees-table">
+                <table class="list" id="employeeList">
+                    <thead>
+                        <tr>
+                            <th class="th">ID Pasien</th>
+                            <th class="th">Nama Lengkap</th>
+                            <th class="th">Alamat</th>
+                            <th class="th">Penyakit</th>
+                            <th class="th">No Ruang</th>
+                            <th class="th">BPJS</th>
+                            <th class="th">Tanggal Masuk</th>
+                            <th class="th">Tanggal Keluar</th>
+                            <th class="th">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+        </div>
+    <script>
+
+        var selectedRow = null
+
+function onFormSubmit() {
+    if (validate()) {
+        var formData = readFormData();
+        if (selectedRow == null)
+            insertNewRecord(formData);
+        else
+            updateRecord(formData);
+        resetForm();
+    }
+}
+
+function readFormData() {
+    var formData = {};
+    formData["idpasien"] = document.getElementById("idpasien").value;
+    formData["nama"] = document.getElementById("nama").value;
+    formData["alamat"] = document.getElementById("alamat").value;
+    formData["penyakit"] = document.getElementById("penyakit").value;
+    formData["noruang"] = document.getElementById("noruang").value;
+    formData["bpjs"] = document.getElementById("bpjs").value;
+    formData["datemasuk"] = document.getElementById("datemasuk").value;
+    formData["datekeluar"] = document.getElementById("datekeluar").value;
+    return formData;
+}
+
+function insertNewRecord(data) {
+    var table = document.getElementById("employeeList").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.length);
+    cell1 = newRow.insertCell(0);
+    cell1.innerHTML = data.idpasien;
+    cell2 = newRow.insertCell(1);
+    cell2.innerHTML = data.nama;
+    cell3 = newRow.insertCell(2);
+    cell3.innerHTML = data.alamat;
+    cell4 = newRow.insertCell(3);
+    cell4.innerHTML = data.penyakit;
+    cell5 = newRow.insertCell(4);
+    cell5.innerHTML = data.noruang;
+    cell6 = newRow.insertCell(5);
+    cell6.innerHTML = data.bpjs;
+    cell7 = newRow.insertCell(6);
+    cell7.innerHTML = data.datemasuk;
+    cell8 = newRow.insertCell(7);
+    cell8.innerHTML = data.datekeluar;
+    cell9 = newRow.insertCell(8);
+    cell9.innerHTML = `<a onClick="onEdit(this)">Edit</a>
+                       <a onClick="onDelete(this)">Delete</a>`;
+}
+
+function resetForm() {
+    document.getElementById("idpasien").value = "";
+    document.getElementById("nama").value = "";
+    document.getElementById("alamat").value = "";
+    document.getElementById("penyakit").value = "";
+    document.getElementById("noruang").value = "";
+    document.getElementById("bpjs").value = "";
+    document.getElementById("datemasuk").value = "";
+    document.getElementById("datekeluar").value = "";
+    selectedRow = null;
+}
+
+function onEdit(td) {
+    selectedRow = td.parentElement.parentElement;
+    document.getElementById("idpasien").value = selectedRow.cells[0].innerHTML;
+    document.getElementById("nama").value = selectedRow.cells[1].innerHTML;
+    document.getElementById("alamat").value = selectedRow.cells[2].innerHTML;
+    document.getElementById("penyakit").value = selectedRow.cells[3].innerHTML;
+    document.getElementById("noruang").value = selectedRow.cells[4].innerHTML;
+    document.getElementById("bpjs").value = selectedRow.cells[5].innerHTML;
+    document.getElementById("datemasuk").value = selectedRow.cells[6].innerHTML;
+    document.getElementById("datekeluar").value = selectedRow.cells[7].innerHTML;
+}
+function updateRecord(formData) {
+    selectedRow.cells[0].innerHTML = formData.idpasien;
+    selectedRow.cells[1].innerHTML = formData.nama;
+    selectedRow.cells[2].innerHTML = formData.alamat;
+    selectedRow.cells[3].innerHTML = formData.penyakit;
+    selectedRow.cells[4].innerHTML = formData.noruang;
+    selectedRow.cells[5].innerHTML = formData.bpjs;
+    selectedRow.cells[6].innerHTML = formData.datemasuk;
+    selectedRow.cells[7].innerHTML = formData.datekeluar;
+}
+
+function onDelete(td) {
+    if (confirm('Are you sure to delete this record ?')) {
+        row = td.parentElement.parentElement;
+        document.getElementById("employeeList").deleteRow(row.rowIndex);
+        resetForm();
+    }
+}
+function validate() {
+    isValid = true;
+    if (document.getElementById("nama").value == "") {
+        isValid = false;
+        document.getElementById("fullNameValidationError").classList.remove("hide");
+    } else {
+        isValid = true;
+        if (!document.getElementById("fullNameValidationError").classList.contains("hide"))
+            document.getElementById("fullNameValidationError").classList.add("hide");
+    }
+    return isValid;
+}
+    </script>
+</body>
+</html>
